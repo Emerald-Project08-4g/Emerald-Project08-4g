@@ -1,5 +1,5 @@
 .googleButton {
-    margin-top: 50px;  
+    margin-top: 50px;
     color: black !important;
     font-weight: bold !important;
     background-color: #f4f4f5 !important;
@@ -8,18 +8,37 @@
     padding-left: 1rem !important;
     padding-right: 1rem !important;
     transition: 0.5s ease all !important;
-}
-
-.googleButton:hover {
+  }
+  
+  .googleButton:hover {
     opacity: 0.8 !important;
-}
-
-.googleButton div {
+  }
+  
+  .googleButton div {
     background-color: #f4f4f5 !important;
     border-radius: 50% !important;
-}
-.googleButton svg {
+  }
+  
+  .googleButton svg {
     margin-top: 5px;
-}
-
-
+  }
+  
+  .createStudentButton {
+    background: #colors[quaternary];
+    width: 80%;
+    display: block;
+    margin: 20px auto;
+    border: 2px solid;
+    border-color: #colors[secondary];
+    padding: 14px 40px;
+    outline: none;
+    color: #colors[text-primary];
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.25s;
+  
+    &:hover {
+      background-color: #colors[quinary];
+      color: #colors[text-primary];
+    }
+  }

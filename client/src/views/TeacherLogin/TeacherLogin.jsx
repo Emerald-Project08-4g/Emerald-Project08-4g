@@ -7,6 +7,8 @@ import './TeacherLogin.less';
 import {GoogleLogin} from 'react-google-login';
 import {gapi} from 'gapi-script';
 import './style.css'
+// TeacherLogin.jsx
+import { handleCreateStudent } from './createStudent';  // Check and adjust the path accordingly
 
 const CLIENT_ID = "296846904571-jiau68kb1m5ovbjodmho8ei6fe69qbkv.apps.googleusercontent.com";
 const API_KEY = "AIzaSyBH4GlSHNm7zUcrcINb-uKI82l36vbD4jA";
@@ -94,7 +96,12 @@ export default function TeacherLogin() {
   const onFail = (res) => {
     console.log(res);
   };
-  
+
+  const createStudent = () => {
+    // Call the function from the imported file
+    handleCreateStudent();
+  };
+
   function Login() {
     return (
         <div id="signInButton">
@@ -143,6 +150,8 @@ export default function TeacherLogin() {
             onClick={handleLogin}
             disabled={loading}
           />
+          {/* New button for creating a student */}
+          <input id="create-student-button" type="button" value="Create Student" onClick={createStudent} />
         </form>
         <Login/>
       </div>
