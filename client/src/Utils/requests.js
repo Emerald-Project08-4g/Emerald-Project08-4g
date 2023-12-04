@@ -313,12 +313,26 @@ export const addStudent = async (name, character, classroom) =>
     error: 'Failed to add student.',
   });
 
+  export const addGoogleStudent = async (name, character, googleID, classroom) =>
+  makeRequest({
+    method: POST,
+    path: `${server}/students`,
+    data: {
+      name: name,
+      character: character,
+      googleID: googleID,
+      classroom: classroom,
+    },
+    auth: true,
+    error: 'Failed to add student.',
+  });
+
 export const addStudents = async (students, classroom) =>
   makeRequest({
     method: POST,
     path: `${server}/students`,
     data: { students: students, classroom: classroom },
-    auth: false,
+    auth: true,
     error: 'Failed to add students.',
   });
 

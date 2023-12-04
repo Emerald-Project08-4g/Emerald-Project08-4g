@@ -675,6 +675,9 @@
               "last_logged_in": {
                 "type": "string"
               },
+              "googleID": {
+                "type": "string"
+              },
               "created_by": {
                 "type": "string"
               },
