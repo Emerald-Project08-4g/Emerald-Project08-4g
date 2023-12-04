@@ -2,8 +2,8 @@ import React, { useState , useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import './Home.less';
-import { getStudents, postJoin, addStudents, getAllClassrooms } from '../../Utils/requests';
-import { setUserSession } from '../../Utils/AuthRequests';
+import { getStudents, postJoin, addGoogleStudent, getAllClassrooms } from '../../Utils/requests';
+import { postUser, setUserSession, removeUserSession } from '../../Utils/AuthRequests';
 import {GoogleLogin} from 'react-google-login';
 import {gapi} from 'gapi-script';
 
@@ -51,9 +51,9 @@ export default function HomeJoin(props) {
     getStudents(joinCode).then((res) => {
       if (res.data) {
         setStudentList(res.data);
-      } else {
+      } /*else {
         message.error(res.err);
-      }
+      }*/
     });
   }, [joinCode]);
 
@@ -71,75 +71,63 @@ export default function HomeJoin(props) {
   const handleStudentGoogleLogin = async (acct) => {
     setLoading(true);
     let ids = [];
-    //console.log(acct.googleId);
-    let name = acct.profileObj.givenName; //get the google profile's name to search the classroom for it
-    //console.log(ids);
-    let res = null;
+    let googleId = acct.googleId;
+    let firstName = acct.profileObj.givenName + ' ';
+    let lastName = acct.profileObj.familyName + '.'; //convert it to a string because it's not already somehow?
+    let name = firstName + lastName.charAt(0) + '.'; //get the google profile's name to search the classroom for it
+    let character = "Char";
+    let canLogin = false;
+    //console.log(name);
 
-
+    console.log(studentList.length);
     //if the name is found, return the corresponding id, then log in.
     for(let i = 0; i < studentList.length; i++)
     {
-      //console.log(studentList[i].name + ' ' + name);
-      if(name === studentList[i].name)
+      //console.log(studentList[i].name + ' ' + googleId); 
+      //due to limited functionality of studentList, it cannot provide googleId to be checked, so just names will be checked for now.
+
+      if(studentList[i].name === name)
       {
         ids[0] = studentList[i].id;
-        //console.log(joinCode + ' ' + ids);
+        console.log(joinCode + ' ' + ids);
         
         //attempt to log the user in, otherwise return a null value
-        res = await postJoin(joinCode, ids).catch((error) => {
-          res = null;
-        });
+        const res = await postJoin(joinCode, ids)
+        if(res.data)
+        {
+          console.log(res);
+          setLoading(false);
+          setUserSession(res.data.jwt, JSON.stringify(res.data.students));
+          navigate('/student');
+        }
+        canLogin = true;
+        break;
       }
     }
-    //console.log(res);
 
     //handle if a new account should be made if null
-    if (res === null || res.data === null)
+    if(!canLogin)
     {
       setLoading(false);
       message.error('Google account does not exist, creating one for you. Please login again.'); //student creation happens here
-
-      //create a temporary student object, based off the first item in the student list to get the formatting correct.
-      //then, edit the values to create an account based off the google account
-      let tempStudent = null;
-      //console.log(studentList[0]);
-      tempStudent = studentList[0];
-      tempStudent.name = name;
-      tempStudent.id = acct.googleId;
-      tempStudent.character = null;
-      console.log(tempStudent);
-
-      //get the classroom and id
-      let classroom = null;
-      let classroomId = null;
+      let classroomId = null;  //get the classroom id
       for(let j = 0; j < classroomList.length; j++)
       {
-        //console.log(classroomList[j].code);
-        //console.log(joinCode);
-
         if(joinCode === classroomList[j].code) //if found, set the classroom & id
         {
-          classroom = classroomList[j];
           classroomId = classroomList[j].id;
         }
       }
-      tempStudent.classroom = classroom;//set the classroom in the student object
-      let students = [];                //create an array to pass the student into the addStudents function
-      students[0] = tempStudent;        //which posts the student to the server.
-      //console.log(students);
 
-      const newstudent = await addStudents(students, classroomId);
-      console.log(newstudent);          //output the new student object to the console to confirm it was created correctly.
-    }
-    else if (res.data) { //otherwise, login to the session
-      setLoading(false);
-      setUserSession(res.data.jwt, JSON.stringify(res.data.students));
-      navigate('/student');
-    }
-    else { //should not error, but just in case handle it
-      setLoading(false);
-      message.error('Error. Please try again.');
+      let newStudent = null;
+      let body = { identifier: 'teacher', password: 'easypassword' };
+      await postUser(body)
+      .then((response) => {             //due to database limitations, temporarily login as a classroom manager
+        setUserSession(response.data.jwt, JSON.stringify(response.data.user));  
+        newStudent = addGoogleStudent(name, character, googleId, classroomId);  //then create a student with info
+        removeUserSession();            //log out of the classroom manager so that the student can then login.
+      });
+      console.log(newStudent);          //output the new student object to the console to confirm it was created correctly.
     }
   };
   
