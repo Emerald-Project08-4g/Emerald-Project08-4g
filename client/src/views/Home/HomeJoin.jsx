@@ -83,7 +83,7 @@ export default function HomeJoin(props) {
     //if the name is found, return the corresponding id, then log in.
     for(let i = 0; i < studentList.length; i++)
     {
-      //console.log(studentList[i].name + ' ' + googleId); 
+      console.log(studentList[i].name + ' ' + name); 
       //due to limited functionality of studentList, it cannot provide googleId to be checked, so just names will be checked for now.
 
       if(studentList[i].name === name)
@@ -109,7 +109,7 @@ export default function HomeJoin(props) {
     if(!canLogin)
     {
       setLoading(false);
-      message.error('Google account does not exist, creating one for you. Please login again.'); //student creation happens here
+      message.error('Google account does not exist, creating one for you. Please refresh the page and login again.'); //student creation happens here
       let classroomId = null;  //get the classroom id
       for(let j = 0; j < classroomList.length; j++)
       {
@@ -124,9 +124,13 @@ export default function HomeJoin(props) {
       await postUser(body)
       .then((response) => {             //due to database limitations, temporarily login as a classroom manager
         setUserSession(response.data.jwt, JSON.stringify(response.data.user));  
-        newStudent = addGoogleStudent(name, character, googleId, classroomId);  //then create a student with info
-        removeUserSession();            //log out of the classroom manager so that the student can then login.
       });
+
+      newStudent = await addGoogleStudent(name, character, googleId, classroomId) //then create a student with info
+      .then(() => {
+        removeUserSession();            //log out of the classroom manager so that the student can then login.
+      });  
+                 
       console.log(newStudent);          //output the new student object to the console to confirm it was created correctly.
     }
   };
