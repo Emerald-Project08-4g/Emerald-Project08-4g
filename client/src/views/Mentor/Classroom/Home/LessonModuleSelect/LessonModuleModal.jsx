@@ -71,6 +71,7 @@ export default function LessonModuleModal({
     setActivePanel('panel-2');
   };
 
+
   return (
     <div id='lesson-module-modal'>
       <button id='change-lesson-btn' onClick={showModal}>
