@@ -8,9 +8,10 @@ const POST = 'POST';
 const DELETE = 'DELETE';
 
 // all request functions should utilize makeRequest and return an obj with structure {data, err}
-const makeRequest = async ({ method, path, data, auth = false, error }) => {
+const makeRequest = async ({ method, path, data, auth = true, error }) => {
   let res = null;
   let err = null;
+  
   const config = auth
     ? {
         headers: {
@@ -37,7 +38,6 @@ const makeRequest = async ({ method, path, data, auth = false, error }) => {
         throw Error('Invalid method.');
     }
   } catch (e) {
-    console.error(e);
     err = error ? error : 'An error occurred.';
   }
 

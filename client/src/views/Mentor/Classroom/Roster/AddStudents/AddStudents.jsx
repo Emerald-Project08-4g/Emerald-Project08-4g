@@ -7,6 +7,7 @@ import { addStudent, addStudents } from "../../../../../Utils/requests"
 import "./AddStudents.less"
 
 export default function AddStudents({ classroomId, addStudentsToTable }) {
+  console.log("addStudentsToTable: " + addStudentsToTable);
   const [name, setName] = useState("")
   const [uploadedRoster, setUploadedRoster] = useState([])
   const [tableData, setTableData] = useState([])
@@ -53,6 +54,7 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
       chosenCharacter ? chosenCharacter.emoji : null,
       classroomId
     )
+    console.log("classroomId: " + classroomId);
     if (res.data) {
       addStudentsToTable([res.data])
       message.success(

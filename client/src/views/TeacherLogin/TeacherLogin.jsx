@@ -3,19 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
 import { postUser, setUserSession } from '../../Utils/AuthRequests'; //AUTHREQUESTS REACHED!
-import { addStudent, getAllStudents, makeRequest } from '../../Utils/requests'; //AUTHREQUESTS REACHED!
+import { addStudent, getAllStudents, getStudentClassroom } from '../../Utils/requests'; //AUTHREQUESTS REACHED!
 import './TeacherLogin.less';
 import {GoogleLogin} from 'react-google-login';
 import {gapi} from 'gapi-script';
 import './style.css'
 import { server } from '../../Utils/hosts'; //for addStudent
 import { getCurrUser } from '../../Utils/userState';
+import { getToken } from '../../Utils/AuthRequests';
+// import { Roster } from '../Mentor/Classroom/Roster';
 
-//from requests.js
-const GET = 'GET';
-const PUT = 'PUT';
-const POST = 'POST';
-const DELETE = 'DELETE';
+import axios from 'axios';
+
+
+
 
 const CLIENT_ID = "296846904571-jiau68kb1m5ovbjodmho8ei6fe69qbkv.apps.googleusercontent.com";
 const API_KEY = "AIzaSyBH4GlSHNm7zUcrcINb-uKI82l36vbD4jA";
@@ -74,17 +75,15 @@ export default function TeacherLogin() {
       });
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
     
 
     setLoading(true);
     let body = { identifier: 'teacher', password: 'easypassword' }; //this is what's making it teacher -> hard-coded in for now
     postUser(body)
-      .then((response) => {    
-        // console.log("repsonse.data.jwt: " + response.data.jwt);
-        // console.log("response.data.user: " + JSON.stringify(response.data));
+      .then(async (response) => {    
+
         setUserSession(response.data.jwt, JSON.stringify(response.data.user));
-        console.log("user: " + response.data.jwt + " " + JSON.stringify(response.data.user));
         setLoading(false);
         if (response.data.user.role.name === 'Content Creator') {
           navigate('/ccdashboard');
@@ -93,13 +92,15 @@ export default function TeacherLogin() {
         } else {
           navigate('/dashboard');
         }
-        console.log(JSON.stringify(getCurrUser()));
-        // addStudent("Jam", "Dog", "Classroom")
-        // .then((data, error) => {
-        //   console.log(data, error)
-        // });
-        // console.log(getAllStudents());
-        console.log(addStudent("Jam C.", "🐱", "Defense Against the Dark Arts"))
+     
+        
+
+
+        const newStudent = addStudent("Aaron E.", "🦒", "8"); //edits the DB within strapi but also returns a data Promise variable (const newStudent)
+
+
+
+
       })
       .catch((error) => { //this happens if an invalid body is sent to the AuthRequest's strapi request
         setLoading(false);
@@ -110,7 +111,9 @@ export default function TeacherLogin() {
   };
 
   const onSucc = (res) => {
-    handleGoogleLogin()
+    handleGoogleLogin();
+    const result = getStudentClassroom();
+
   };
   
   const onFail = (res) => {

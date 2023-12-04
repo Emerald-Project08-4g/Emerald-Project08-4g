@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import './Home.less';
-import { getStudents } from '../../Utils/requests';
+import { getStudents, getClassroom } from '../../Utils/requests';
 
 export default function HomeJoin(props) {
   const [loading, setLoading] = useState(false);
@@ -11,13 +11,14 @@ export default function HomeJoin(props) {
   const handleLogin = () => {
     setLoading(true);
 
-    getStudents(joinCode).then((res) => {
+    getClassroom(joinCode).then((res) => {
       if (res.data) {
         setLoading(false);
         localStorage.setItem('join-code', joinCode);
         navigate('/login');
       } else {
         setLoading(false);
+        console.log("join code: " + joinCode);
         message.error('Join failed. Please input a valid join code.');
       }
     });
