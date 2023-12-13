@@ -149,3 +149,6 @@ Some other changes are as follow:
 - Added a custom Google Sign-in Button to TeacherLogin and StudentLogin
 - Implemented a placeholder student Google login function that replicates the process of a student logging into CASMM using their Google account
 - Modified Strapi database to create a new student account based on pre-existing account associated with the student's Google account. Also modified schema to account for googleID
+
+## Running the Project Locally
+All initial steps to run the project are listed above. However, there may be dependency issues when first running the project due to deprecated features. To bypass this, use **npm install --force** when installing dependencies required to run this project. 
