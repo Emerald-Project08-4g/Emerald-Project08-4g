@@ -140,3 +140,12 @@ Before submitting a pull request, rebase the feature branch into the target bran
 
 - PRs to **master** should squash and merge
 - PRs to all other branches should create a merge commit
+
+
+##Most Recet Developments
+
+The most recent changes made to this fork include the ability to login using a validated test account. Currently the only account that the application will work with is the test account emerald4g08@gmail.com
+Some other changes are as follow:
+- Added a custom Google Sign-in Button to TeacherLogin and StudentLogin
+- Implemented a placeholder student Google login function that replicates the process of a student logging into CASMM using their Google account
+- Modified Strapi database to create a new student account based on pre-existing account associated with the student's Google account. Also modified schema to account for googleID
