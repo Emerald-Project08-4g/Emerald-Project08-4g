@@ -142,7 +142,7 @@ Before submitting a pull request, rebase the feature branch into the target bran
 - PRs to all other branches should create a merge commit
 
 
-##Most Recet Developments
+## Most Recent Developments
 
 The most recent changes made to this fork include the ability to login using a validated test account. Currently the only account that the application will work with is the test account emerald4g08@gmail.com
 Some other changes are as follow:
